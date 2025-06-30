@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Meteorological Data WebApp</title>
+
+  <link rel="icon" type="image/png" href="{{ url_for('static', filename='drdo_logo.png') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+<div class="header text-center mt-3">
+  <img src="{{ url_for('static', filename='drdo_logo.png') }}" alt="DRDO Logo">
+  <h1>Meteorological Data WebApp</h1>
+</div>
+
+<div class="container mt-4">
+  <form id="uploadForm" method="POST" enctype="multipart/form-data">
+    <div class="dropzone" id="dropzone">
+      Drag & Drop CSV files here or click to select files
+      <input type="file" id="fileInput" name="files" accept=".csv" multiple style="display:none;">
+    </div>
+
+    <div id="file-list" class="mt-2"></div>
+
+    <div class="mb-3 mt-3">
+      <label for="altitude" class="form-label">
+        Enter Altitude Step (in meters):<br>
+        <small class="text-muted">e.g., 200 will return data for 0, 200, 400, ...</small>
+      </label>
+      <input type="number" step="any" class="form-control" name="altitude" required>
+    </div>
+
+    <div class="d-flex gap-2 mb-4">
+      <button type="submit" class="btn btn-success">Get Data</button>
+      <a href="{{ url_for('clear_session') }}" class="btn btn-danger">🗑️ Clear All & Reset</a>
+    </div>
+  </form>
+
+  {% if error %}
+    <div class="alert alert-danger mt-3">{{ error }}</div>
+  {% endif %}
+
+  {% if metadata_map %}
+    <div class="mt-4">
+      <h5>📊 Dataset Metadata</h5>
+      <ul>
+        {% for fname, meta in metadata_map.items() %}
+          <li><strong>{{ fname }}</strong> — Rows: {{ meta.rows }}, Columns: {{ meta.columns|join(", ") }}</li>
+        {% endfor %}
+      </ul>
+    </div>
+  {% endif %}
+
+  {% if result %}
+    <h3>Results</h3>
+    <table class="table table-bordered table-striped mt-3 translucent-table">
+      <thead class="table-success">
+        <tr>
+          <th>Dataset</th>
+          <th>Input Altitude (m)</th>
+          <th>Matched Altitude (m)</th>
+          <th>Temperature (K)</th>
+          <th>Pressure (hPa)</th>
+          <th>Humidity (%)</th>
+          <th>Wind Speed (knots)</th>
+          <th>Wind Direction (°)</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for row in result %}
+          <tr>
+            <td>{{ row['Dataset'] }}</td>
+            <td>{{ row['Input_Altitude'] }}</td>
+            <td>{{ row['Matched_Altitude_m'] }}</td>
+            <td>{{ row['Temperature_K'] }}</td>
+            <td>{{ row['Pressure_hPa'] }}</td>
+            <td>{{ row['Humidity_percent'] }}</td>
+            <td>{{ row['WindSpeed_knots'] }}</td>
+            <td>{{ row['WindDirection_deg'] }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+    <a href="{{ url_for('download_csv') }}" class="btn btn-primary mt-3 me-2">📥 Download CSV</a>
+    <a href="{{ url_for('download_all') }}" class="btn btn-warning mt-3 me-2">📦 Download Graphs + CSV</a>
+
+    <div class="mt-5">
+      <h4>📈 Graphical Visualization</h4>
+
+      <div class="mt-4">
+        <h5>Input vs Matched Altitude (m)</h5>
+        <canvas id="altitudeChart" height="100"></canvas>
+      </div>
+
+      <div class="mt-4">
+        <h5>Temperature (K)</h5>
+        <canvas id="temperatureChart" height="100"></canvas>
+      </div>
+
+      <div class="mt-4">
+        <h5>Pressure (hPa)</h5>
+        <canvas id="pressureChart" height="100"></canvas>
+      </div>
+
+      <div class="mt-4">
+        <h5>Humidity (%)</h5>
+        <canvas id="humidityChart" height="100"></canvas>
+      </div>
+
+      <div class="mt-4">
+        <h5>Wind Speed (knots)</h5>
+        <canvas id="windspeedChart" height="100"></canvas>
+      </div>
+
+      <div class="mt-4">
+        <h5>Wind Direction (°)</h5>
+        <canvas id="winddirChart" height="100"></canvas>
+      </div>
+    </div>
+  {% endif %}
+</div>
+
+<button class="theme-toggle-icon bottom-toggle" id="themeToggleBtn">
+  <span id="themeIcon">🌙</span>
+</button>
+
+<footer class="text-center text-muted mt-5 mb-3">
+  <div>© 2025 DRDO Meteorological WebApp | Version: v1.3</div>
+  <div>👨‍💻 Developed by <strong>MET Grp-3</strong></div>
+</footer>
+
+<script>
+  const dropzone = document.getElementById("dropzone");
+  const fileInput = document.getElementById("fileInput");
+  const fileList = document.getElementById("file-list");
+  let filesArray = [];
+
+  dropzone.addEventListener("click", () => fileInput.click());
+  dropzone.addEventListener("dragover", e => {
+    e.preventDefault();
+    dropzone.classList.add("dragover");
+  });
+  dropzone.addEventListener("dragleave", () => {
+    dropzone.classList.remove("dragover");
+  });
+  dropzone.addEventListener("drop", e => {
+    e.preventDefault();
+    dropzone.classList.remove("dragover");
+    handleFiles(e.dataTransfer.files);
+  });
+  fileInput.addEventListener("change", () => {
+    handleFiles(fileInput.files);
+  });
+
+  function handleFiles(files) {
+    for (let file of files) {
+      if (!filesArray.some(f => f.name === file.name)) {
+        filesArray.push(file);
+      }
+    }
+    updateFileInput();
+    renderFileList();
+  }
+
+  function updateFileInput() {
+    const dataTransfer = new DataTransfer();
+    filesArray.forEach(file => dataTransfer.items.add(file));
+    fileInput.files = dataTransfer.files;
+  }
+
+  function renderFileList() {
+    fileList.innerHTML = "";
+    filesArray.forEach((file, index) => {
+      const div = document.createElement("div");
+      div.className = "alert alert-secondary d-flex justify-content-between align-items-center";
+      div.innerHTML = `
+        ${file.name}
+        <button type="button" class="btn btn-sm btn-danger">Remove</button>
+      `;
+      div.querySelector("button").addEventListener("click", () => {
+        filesArray.splice(index, 1);
+        updateFileInput();
+        renderFileList();
+      });
+      fileList.appendChild(div);
+    });
+  }
+</script>
+
+{% if result %}
+<script>
+  const resultData = {{ result | tojson }};
+
+  const inputAltitudes = resultData.map(r => r.Input_Altitude);
+  const matchedAltitudes = resultData.map(r => r.Matched_Altitude_m);
+  const temperatures = resultData.map(r => r.Temperature_K);
+  const pressures = resultData.map(r => r.Pressure_hPa);
+  const humidities = resultData.map(r => r.Humidity_percent);
+  const windSpeeds = resultData.map(r => r.WindSpeed_knots);
+  const windDirs = resultData.map(r => r.WindDirection_deg);
+
+  const chartOptions = {
+    responsive: true,
+    plugins: {
+      legend: { display: true },
+      tooltip: { mode: 'index', intersect: false }
+    },
+    scales: {
+      x: { title: { display: true, text: "Input Altitude (m)" }},
+      y: { title: { display: true, text: "Value" }}
+    }
+  };
+
+  new Chart(altitudeChart, {
+    type: "line",
+    data: {
+      labels: inputAltitudes,
+      datasets: [
+        { label: "Input Altitude", data: inputAltitudes, borderColor: "#007bff", fill: false },
+        { label: "Matched Altitude", data: matchedAltitudes, borderColor: "#28a745", fill: false }
+      ]
+    },
+    options: { ...chartOptions, scales: { ...chartOptions.scales, y: { title: { text: "Altitude (m)" }}}}
+  });
+
+  new Chart(temperatureChart, {
+    type: "line",
+    data: {
+      labels: inputAltitudes,
+      datasets: [{ label: "Temperature (K)", data: temperatures, borderColor: "#dc3545", fill: false }]
+    },
+    options: { ...chartOptions, scales: { ...chartOptions.scales, y: { title: { text: "Temperature (K)" }}}}
+  });
+
+  new Chart(pressureChart, {
+    type: "line",
+    data: {
+      labels: inputAltitudes,
+      datasets: [{ label: "Pressure (hPa)", data: pressures, borderColor: "#17a2b8", fill: false }]
+    },
+    options: { ...chartOptions, scales: { ...chartOptions.scales, y: { title: { text: "Pressure (hPa)" }}}}
+  });
+
+  new Chart(humidityChart, {
+    type: "line",
+    data: {
+      labels: inputAltitudes,
+      datasets: [{ label: "Humidity (%)", data: humidities, borderColor: "#6f42c1", fill: true, backgroundColor: "rgba(111,66,193,0.1)" }]
+    },
+    options: { ...chartOptions, scales: { ...chartOptions.scales, y: { title: { text: "Humidity (%)" }}}}
+  });
+
+  new Chart(windspeedChart, {
+    type: "line",
+    data: {
+      labels: inputAltitudes,
+      datasets: [{ label: "Wind Speed (knots)", data: windSpeeds, borderColor: "#fd7e14", fill: false }]
+    },
+    options: { ...chartOptions, scales: { ...chartOptions.scales, y: { title: { text: "Speed (knots)" }}}}
+  });
+
+  new Chart(winddirChart, {
+    type: "line",
+    data: {
+      labels: inputAltitudes,
+      datasets: [{ label: "Wind Direction (°)", data: windDirs, borderColor: "#20c997", fill: false }]
+    },
+    options: { ...chartOptions, scales: { ...chartOptions.scales, y: { title: { text: "Direction (°)" }}}}
+  });
+</script>
+{% endif %}
+
+<script>
+  const themeBtn = document.getElementById("themeToggleBtn");
+  const themeIcon = document.getElementById("themeIcon");
+
+  const savedTheme = localStorage.getItem("theme");
+  if (savedTheme === "dark") {
+    document.body.classList.add("dark-mode");
+    themeIcon.textContent = "🔆";
+  }
+
+  themeBtn.addEventListener("click", () => {
+    const isDark = document.body.classList.toggle("dark-mode");
+    themeIcon.textContent = isDark ? "🔆" : "🌙";
+    localStorage.setItem("theme", isDark ? "dark" : "light");
+  });
+</script>
+
+</body>
+</html>

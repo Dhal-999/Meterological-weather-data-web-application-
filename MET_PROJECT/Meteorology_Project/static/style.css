@@ -1,0 +1,530 @@
+/* Global Styling */
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f4f7f9;
+  color: #333;
+  margin: 0;
+  padding: 20px;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Header */
+.header {
+  display: flex;
+  align-items: center;
+  background-color: #003366;
+  color: white;
+  border-radius: 10px;
+  padding: 15px 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+.header img {
+  height: 50px;
+  margin-right: 15px;
+}
+.header h1 {
+  margin: 0;
+  font-size: 1.8rem;
+}
+
+/* Dropzone */
+.dropzone {
+  border: 2px dashed #6c757d;
+  border-radius: 8px;
+  padding: 30px;
+  text-align: center;
+  color: #6c757d;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  background-color: #ffffff;
+}
+.dropzone:hover,
+.dropzone.dragover {
+  background-color: #e9f5ff;
+  border-color: #3399ff;
+  color: #3399ff;
+}
+
+/* File Preview Card */
+.file-wrapper {
+  position: relative;
+  min-width: 200px;
+}
+.file-slot {
+  background-color: #f8f9fa;
+  padding: 10px 15px;
+  border-left: 4px solid #28a745;
+  transition: all 0.2s ease;
+}
+.file-slot:hover {
+  background-color: #e6ffee;
+  box-shadow: 0 0 5px rgba(0, 128, 0, 0.1);
+}
+
+/* Remove Button */
+.remove-btn-outside {
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 26px;
+  height: 26px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+.remove-btn-outside:hover {
+  background-color: #bd2130;
+}
+
+/* Inputs */
+input[type="text"],
+input.form-control {
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+input[type="text"]:focus,
+input.form-control:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.4);
+}
+
+/* Buttons */
+button,
+.btn {
+  transition: all 0.3s ease-in-out;
+}
+button.btn-success {
+  background-color: #28a745;
+  border: none;
+}
+button.btn-success:hover {
+  background-color: #218838;
+  color: #fff;
+  transform: scale(1.05);
+}
+.btn-download {
+  background-color: #007bff;
+  border: none;
+}
+.btn-download:hover {
+  background-color: #0056b3;
+  color: #fff;
+  transform: scale(1.05);
+}
+
+/* Table */
+table {
+  background-color: #ffffff;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+  border-radius: 5px;
+  overflow: hidden;
+}
+th {
+  background-color: #28a745;
+  color: white;
+}
+tr:nth-child(even) {
+  background-color: #f8f9fa;
+}
+
+/* Nav Tabs */
+.nav-tabs .nav-link {
+  font-weight: 500;
+  color: #555;
+  border: 1px solid transparent;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+.nav-tabs .nav-link:hover {
+  color: #007bff;
+}
+.nav-tabs .nav-link.active {
+  background-color: #007bff;
+  color: white;
+  font-weight: bold;
+  border-color: #007bff;
+  border-radius: 0.5rem 0.5rem 0 0;
+}
+
+/* Tab Transitions */
+.tab-content .tab-pane {
+  opacity: 0;
+  transition: opacity 0.4s ease-in-out;
+}
+.tab-content .tab-pane.active.show {
+  opacity: 1;
+}
+
+/* Footer */
+.footer {
+  margin-top: 40px;
+  text-align: center;
+  font-size: 0.9em;
+  color: #777;
+}
+.footer a {
+  color: #007bff;
+  text-decoration: none;
+}
+.footer a:hover {
+  text-decoration: underline;
+}
+
+/* 🌙 Beautiful, Modern Dark Mode Theme */
+body.dark-mode {
+  background-color: #0d1117;
+  color: #c9d1d9;
+}
+
+/* Header Bar */
+body.dark-mode .header {
+  background-color: #161b22;
+  color: #f0f6fc;
+  box-shadow: 0 2px 10px rgba(240, 246, 252, 0.1);
+}
+
+/* Dropzone */
+body.dark-mode .dropzone {
+  background-color: #21262d;
+  border-color: #3b3f44;
+  color: #8b949e;
+}
+body.dark-mode .dropzone:hover {
+  background-color: #2c313a;
+  color: #58a6ff;
+  border-color: #58a6ff;
+}
+
+/* Input & Controls */
+body.dark-mode input,
+body.dark-mode input[type="text"],
+body.dark-mode .form-control {
+  background-color: #161b22;
+  border: 1px solid #30363d;
+  color: #c9d1d9;
+}
+body.dark-mode input:focus {
+  border-color: #58a6ff;
+  box-shadow: 0 0 4px #58a6ff55;
+}
+
+/* Buttons */
+body.dark-mode .btn {
+  background-color: #238636;
+  color: white;
+  border: none;
+}
+body.dark-mode .btn:hover {
+  background-color: #2ea043;
+  transform: scale(1.05);
+}
+
+/* Download Button */
+body.dark-mode .btn-download {
+  background-color: #1f6feb;
+}
+body.dark-mode .btn-download:hover {
+  background-color: #388bfd;
+}
+
+/* File cards */
+body.dark-mode .file-slot {
+  background-color: #1c2128;
+  border-left: 4px solid #3fb950;
+  color: #c9d1d9;
+}
+body.dark-mode .file-slot:hover {
+  background-color: #2a2f36;
+  box-shadow: 0 0 4px rgba(63, 185, 80, 0.3);
+}
+
+/* Table */
+body.dark-mode .table {
+  background-color: #161b22;
+  color: #c9d1d9;
+}
+body.dark-mode .table th {
+  background-color: #238636;
+  color: #ffffff;
+}
+body.dark-mode .table-striped > tbody > tr:nth-of-type(even) {
+  background-color: #1c2128;
+}
+
+/* Nav Tabs */
+body.dark-mode .nav-tabs .nav-link {
+  color: #8b949e;
+  background-color: #161b22;
+  border-color: transparent;
+}
+body.dark-mode .nav-tabs .nav-link.active {
+  background-color: #21262d;
+  color: #f0f6fc;
+  border-color: #30363d #30363d transparent;
+}
+
+/* Tab content */
+body.dark-mode .tab-content {
+  background-color: #161b22;
+  border: 1px solid #30363d;
+  border-top: none;
+  color: #c9d1d9;
+}
+
+/* Footer */
+body.dark-mode .footer {
+  color: #8b949e;
+}
+body.dark-mode .footer a {
+  color: #58a6ff;
+}
+body.dark-mode .footer a:hover {
+  text-decoration: underline;
+}
+
+/* Remove button */
+body.dark-mode .remove-btn-outside {
+  background-color: #f85149;
+  color: #fff;
+}
+body.dark-mode .remove-btn-outside:hover {
+  background-color: #da3633;
+}
+
+/* Loader Overlay */
+body.dark-mode #spinner-overlay {
+  background: rgba(13, 17, 23, 0.6);
+}
+body.dark-mode .loader-text {
+  color: #58a6ff;
+}
+
+/* Tooltips (optional enhancement if needed) */
+body.dark-mode .tooltip-inner {
+  background-color: #21262d;
+  color: #f0f6fc;
+  border: 1px solid #30363d;
+}
+
+/* FIX: File name text inside file-slot */
+body.dark-mode .file-slot {
+  color: #000000 !important; /* ensure readability */
+}
+
+/* FIX: Muted Text like “Last updated” */
+body.dark-mode .text-muted {
+  color: #8b949e !important;
+}
+
+/* FIX: Input Fields (general form-control and result search) */
+body.dark-mode input.form-control,
+body.dark-mode input[type="text"],
+body.dark-mode #tableSearch {
+  background-color: #161b22;
+  border: 1px solid #30363d;
+  color: #c9d1d9;
+}
+
+body.dark-mode input::placeholder {
+  color: #8b949e;
+}
+
+body.dark-mode input:focus {
+  border-color: #58a6ff;
+  box-shadow: 0 0 4px #58a6ff55;
+}
+
+
+/* Responsive Fixes */
+@media (max-width: 768px) {
+  .file-wrapper {
+    width: 100%;
+  }
+  .dropzone {
+    padding: 20px;
+  }
+}
+
+#spinner-overlay {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+body.dark-mode #spinner-overlay {
+  background: rgba(0, 0, 0, 0.6);
+}
+
+/* 🔄 Processing Text Loader */
+#spinner-overlay {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+body.dark-mode #spinner-overlay {
+  background: rgba(0, 0, 0, 0.6);
+}
+
+.loader-text {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #333;
+  animation: pulse 1.5s infinite;
+}
+
+body.dark-mode .loader-text {
+  color: #fff;
+}
+
+@keyframes pulse {
+  0%   { opacity: 0.2; }
+  50%  { opacity: 1; }
+  100% { opacity: 0.2; }
+}
+
+.theme-toggle-icon {
+  float: right;
+  margin-top: -10px;
+  background-color: transparent;
+  border: none;
+  font-size: 1.4rem;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+.theme-toggle-icon:hover {
+  transform: rotate(15deg);
+}
+
+/* 🎯 Icon Toggle Styling */
+.theme-toggle-icon {
+  float: right;
+  background-color: #000000;
+  color: #1900ff;
+  border: none;
+  border-radius: 50%;
+  font-size: 1.4rem;
+  padding: 8px 10px;
+  margin-top: -10px;
+  margin-right: 10px;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+
+/* Hover effect */
+.theme-toggle-icon:hover {
+  transform: rotate(15deg);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+/* 🌙 Dark Mode Customizations */
+body.dark-mode .theme-toggle-icon {
+  background-color: #1f6f43;  /* Green/teal glow */
+  color: #2200ff;
+  box-shadow: 0 0 10px #2ea043aa;
+}
+
+/* 📍 Bottom Right Toggle Button */
+.theme-toggle-icon.bottom-toggle {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 1000;
+  background-color: #000000;
+  color: #f0f6fc;
+  border: none;
+  border-radius: 50%;
+  font-size: 1.5rem;
+  padding: 10px 12px;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  transition: transform 0.3s ease-in-out;
+}
+
+/* Hover and dark mode styles */
+.theme-toggle-icon.bottom-toggle:hover {
+  transform: scale(1.15) rotate(20deg);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+body.dark-mode .theme-toggle-icon.bottom-toggle {
+  background-color: #1f6f43;
+  color: #f0f6fc;
+  box-shadow: 0 0 10px #2ea043aa;
+}
+.theme-toggle-icon.bottom-toggle {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 1000;
+  background-color: #000000;
+  color: #f0f6fc;
+  border: none;
+  border-radius: 50%;
+  font-size: 1.5rem;
+  padding: 10px 12px;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  transition: transform 0.3s ease-in-out;
+}
+.theme-toggle-icon.bottom-toggle:hover {
+  transform: scale(1.15) rotate(20deg);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+body.dark-mode .theme-toggle-icon.bottom-toggle {
+  background-color: #1f6f43;
+  color: #f0f6fc;
+  box-shadow: 0 0 10px #2ea043aa;
+}
+
+/* 🌊 DRDO Watermark Background */
+body::before {
+  content: "";
+  background-image: url("../static/drdo_logo.png"); /* Adjusted for Flask static */
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 300px;
+  opacity: 0.05;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* Make content sit above the watermark */
+body, .container {
+  position: relative;
+  z-index: 1;
+}
+
+.translucent-table {
+  background-color: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(8px);
+  border-radius: 10px;
+}
+
+body.dark-mode .translucent-table {
+  background-color: rgba(22, 27, 34, 0.5);
+  backdrop-filter: blur(8px);
+  border-radius: 10px;
+}
